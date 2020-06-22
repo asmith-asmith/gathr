@@ -14,7 +14,10 @@
         <p>Quantity: {{ product.quantity }}</p>
         <p>Size: {{ product.size }}</p>
       </div>
-
+      <div class="card-action">
+        <a href="{% url 'product_update' product.id %}">Edit</a>
+        <a href="{% url 'product_delete' product.id %}">Delete</a>
+      </div>
     </div>
   </div>
 </div>

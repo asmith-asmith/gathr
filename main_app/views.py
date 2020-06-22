@@ -29,5 +29,20 @@ def signup(request):
   context = {'form': form, 'error_message': error_message}
   return render(request, 'registration/signup.html', context)
 
+class ProductList(ListView):
+  model = Product
+
 class ProductDetail(DetailView):
   model = Product
+
+class ProductCreate(CreateView):
+  model = Product
+  fields = '__all__'
+
+class ProductUpdate(UpdateView):
+  model = Product
+  fields = '__all__'
+
+class ProductDelete(DeleteView):
+  model = Product
+  success_url = '/products/'
