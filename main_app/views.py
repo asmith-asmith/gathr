@@ -47,8 +47,14 @@ class ProductDelete(DeleteView):
   model = Product
   success_url = '/products/'
 
-class CauseList(ListView):
-  model = Cause
+
+def cause_index(request):
+  causes = Cause.objects.all()
+  return render(request, 'main_app/cause_list.html', {'cause_list': causes})
+
+
+# class CauseList(ListView):
+#   model = Cause
 
 class CauseDetail(DetailView):
   model = Cause
@@ -63,4 +69,4 @@ class CauseUpdate(UpdateView):
 
 class CauseDelete(DeleteView):
   model = Cause
-  success_url = '/cause/'
+  success_url = '/causes/'
