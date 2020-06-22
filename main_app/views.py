@@ -5,7 +5,7 @@ from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required #@login_required  -- add this to functions
 from django.contrib.auth.mixins import LoginRequiredMixin #LoginRequiredMixin, -- add this in CBV parameter
-from .models import Product
+from .models import Product, Cause
 
 
 # Create your views here.
@@ -46,3 +46,21 @@ class ProductUpdate(UpdateView):
 class ProductDelete(DeleteView):
   model = Product
   success_url = '/products/'
+
+class CauseList(ListView):
+  model = Cause
+
+class CauseDetail(DetailView):
+  model = Cause
+
+class CauseCreate(CreateView):
+  model = Cause
+  fields = '__all__'
+
+class CauseUpdate(UpdateView):
+  model = Cause
+  fields = '__all__'
+
+class CauseDelete(DeleteView):
+  model = Cause
+  success_url = '/cause/'
