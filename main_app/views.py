@@ -63,4 +63,4 @@ class CauseUpdate(UpdateView):
 
 class CauseDelete(DeleteView):
   model = Cause
-  success_url = '/cause/'
+  success_url = '/causes/'
