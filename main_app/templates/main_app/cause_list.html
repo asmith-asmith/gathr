@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Cause List</h1>
+
+<div class="row">
+    {% for cause in cause_list %}
+    <a href="{% url 'cause_detail' cause.id %}">
+        <div class="col s6 col-offset-3">
+            <div class="card">
+            <div class="card-content">
+                <span class="card-title">{{ cause.name }}</span>
+                <p>Description: {{ cause.description }}</p>
+                <p>Type: {{ cause.type }}</p>
+                <p>Proceeds: {{ cause.proceeds }}</p>
+                <p>Learn More about the Cause: {{ cause.url }}</p>
+            </div>
+            </div>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% endblock %}

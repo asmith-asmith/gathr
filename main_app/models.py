@@ -63,6 +63,7 @@ class Cause(models.Model):
     description = models.TextField(max_length=250)
     type = models.CharField(max_length=100)
     proceeds = models.IntegerField()
+    url = models.URLField(max_length=200, null=True, blank=True)
 
 
 # class Profile(models.Model):
