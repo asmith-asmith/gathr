@@ -20,4 +20,22 @@
     </div>
   </div>
 </div>
+
+<div class="row">
+  <div class="col s6">
+    <table class="striped">
+      <thead>
+        <tr><th>Product</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for product in cause.product_set.all %}
+            <tr>
+              <td><a href="{% url 'product_detail' product.id %}">{{product.name}}</a></td>
+            </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
 {% endblock %}

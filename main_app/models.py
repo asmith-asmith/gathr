@@ -16,21 +16,28 @@ CATEGORY_CHOICES = (
 	('SW', 'Sweatshirt'),
 )
 
+class Cause(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField(max_length=250)
+    cause_type = models.CharField(max_length=100)
+    proceeds = models.IntegerField()
+    url = models.URLField(max_length=200, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
 class Product(models.Model):
     name = models.CharField(max_length=100)
     price = models.FloatField() #Changed this to float feild
     description = models.TextField(max_length=250)
-    size = models.CharField(  
-        max_length=2,
-        choices=SIZES,
-        default=SIZES[0][0]
-    )
+    size = models.CharField(max_length=100)
     quantity = models.IntegerField()
     category = models.CharField( #made this a choice field choice fields accesed by item.get_category_display
         max_length=2,
         choices=CATEGORY_CHOICES,
         default=CATEGORY_CHOICES[0][0]
     )
+    cause = models.ForeignKey(Cause, on_delete=models.CASCADE)
 
     def __str__(self): #added this string method
         return self.name
@@ -38,11 +45,14 @@ class Product(models.Model):
 
 class OrderProduct(models.Model):
     item = models.ForeignKey(Product, on_delete=models.CASCADE)
-    order_quantity = models.IntegerField(default=1) # this will hold quantity of 
+    order_quantity = models.IntegerField(default=1) # this will hold quantity of
+    size = models.CharField(  
+        max_length=2,
+        choices=SIZES,
+        default=SIZES[0][0]
+    )
     # cart = models.ForeignKey(Cart, on_delete=models.SET_NULL)
     # user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-
 
     def __str__(self): #added this string method
         return self.item
@@ -58,19 +68,16 @@ class Cart(models.Model):
 	# def __str__(self):
 	# 	return self.user.username
 
-class Cause(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField(max_length=250)
-    cause_type = models.CharField(max_length=100)
-    proceeds = models.IntegerField()
-    url = models.URLField(max_length=200, null=True, blank=True)
 
 
 
-# class Profile(models.Model):
-#     user = models.OneToOneField(User) 
-#     #null=True, blank=True
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    causes = models.ManyToManyField(Cause)
+    #null=True, blank=True
 
+    def __str__(self):
+        return self.user.username
 
 
 # User model
