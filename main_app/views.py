@@ -5,7 +5,8 @@ from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required #@login_required  -- add this to functions
 from django.contrib.auth.mixins import LoginRequiredMixin #LoginRequiredMixin, -- add this in CBV parameter
-from .models import Product, Cause
+from .models import Product, Cause, Profile, User
+from .forms import OrderForm
 
 
 # Create your views here.
@@ -21,8 +22,10 @@ def signup(request):
     form = UserCreationForm(request.POST)
     if form.is_valid():
       user = form.save()
+      # p = Profile(user=user.user_id, causes=null)
+      # p.save()
       login(request, user)
-      return redirect('index')
+      return redirect('home')
     else:
       error_message = 'Invalid sign up - try again'
   form = UserCreationForm()
@@ -32,8 +35,14 @@ def signup(request):
 class ProductList(ListView):
   model = Product
 
-class ProductDetail(DetailView):
-  model = Product
+
+def product_detail(request, product_id):
+  product = Product.objects.get(id=product_id)
+  order_form = OrderForm()
+  return render(request, 'main_app/product_detail.html', {'product': product, 'order_form': order_form})
+
+# class ProductDetail(DetailView):
+#   model = Product
 
 class ProductCreate(CreateView):
   model = Product
@@ -70,3 +79,9 @@ class CauseUpdate(UpdateView):
 class CauseDelete(DeleteView):
   model = Cause
   success_url = '/causes/'
+
+
+def user_detail(request, user_id):
+  user = User.objects.get(id=user_id)
+  # user = User.objects.get(id=profile.user)
+  return render(request, 'main_app/user_detail.html', {'user': user})
