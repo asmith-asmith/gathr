@@ -5,8 +5,9 @@ from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required #@login_required  -- add this to functions
 from django.contrib.auth.mixins import LoginRequiredMixin #LoginRequiredMixin, -- add this in CBV parameter
-from .models import Product, Cause, Profile, User
-from .forms import OrderForm
+from .models import Product, Cause, Profile, User, Order
+from django.utils import timezone
+# from .forms import 
 
 
 # Create your views here.
@@ -38,8 +39,8 @@ class ProductList(ListView):
 
 def product_detail(request, product_id):
   product = Product.objects.get(id=product_id)
-  order_form = OrderForm()
-  return render(request, 'main_app/product_detail.html', {'product': product, 'order_form': order_form})
+  # order_form = OrderForm()
+  return render(request, 'main_app/product_detail.html', {'product': product})
 
 # class ProductDetail(DetailView):
 #   model = Product
@@ -61,10 +62,6 @@ def cause_index(request):
   causes = Cause.objects.all()
   return render(request, 'main_app/cause_list.html', {'cause_list': causes})
 
-
-# class CauseList(ListView):
-#   model = Cause
-
 class CauseDetail(DetailView):
   model = Cause
 
@@ -85,3 +82,24 @@ def user_detail(request, user_id):
   user = User.objects.get(id=user_id)
   # user = User.objects.get(id=profile.user)
   return render(request, 'main_app/user_detail.html', {'user': user})
+
+
+def add_cart(request, product_id):
+  print(product_id)
+  order_query = Order.objects.filter(user=request.user, ordered=False)
+  product1 = Product.objects.get(id=product_id)
+  if order_query.exists():
+    order = order_query[0]
+    if order.product.filter(id = product_id).exists():
+      pass
+    else:
+      order.product.add(product1)
+  else:
+    ordered_date = timezone.now()
+    order = Order.objects.create(user=request.user, ordered_date=ordered_date)
+    order.product.add(product1)
+  return render(request, 'main_app/order_detail.html', {'order': order})
+
+def cart_detail(request):
+  order = Order.objects.get(user=request.user)
+  return render(request, 'main_app/order_detail.html', {'order': order})
