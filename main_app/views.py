@@ -1,12 +1,13 @@
-from django.shortcuts import render, redirect
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.shortcuts import render, redirect, reverse
+from django.views.generic.edit import CreateView, UpdateView, DeleteView, View
 from django.views.generic import ListView, DetailView
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required #@login_required  -- add this to functions
 from django.contrib.auth.mixins import LoginRequiredMixin #LoginRequiredMixin, -- add this in CBV parameter
-from .models import Product, Cause, Profile, User
+from .models import Product, Cause, Profile, User, Cart, OrderProduct
 from .forms import OrderForm
+from django.utils import timezone
 
 
 # Create your views here.
@@ -22,10 +23,8 @@ def signup(request):
     form = UserCreationForm(request.POST)
     if form.is_valid():
       user = form.save()
-      # p = Profile(user=user.user_id, causes=null)
-      # p.save()
       login(request, user)
-      return redirect('home')
+      return redirect('about')
     else:
       error_message = 'Invalid sign up - try again'
   form = UserCreationForm()
@@ -85,3 +84,55 @@ def user_detail(request, user_id):
   user = User.objects.get(id=user_id)
   # user = User.objects.get(id=profile.user)
   return render(request, 'main_app/user_detail.html', {'user': user})
+
+class CartDetail(DetailView):
+  model = Cart
+
+
+
+# class OrderProdList(ListView):
+#   model = OrderProduct
+
+# class OrderProdDetail(DetailView):
+#   model = OrderProduct
+
+# def OrderProdCreate(request, product_id):
+#   form = OrderForm(request.POST)
+#   order_prod = form.save(commit=False)
+#   order_prod.item_id = product_id
+#   order_prod.save()
+#   return redirect(request, 'main_app/orderproduct_list.html')
+
+
+# class OrderProdDelete(DeleteView):
+#   model = OrderProduct
+#   success_url = '/causes/' #change this
+
+
+def cart_add(request, product_id):
+  form = OrderForm(request.POST)
+  order_prod = form.save(commit=False)
+  order_prod.item_id = product_id
+  order_prod.save()
+  # OrderProduct.objects.create(request.POST)
+  cart_query = Cart.objects.filter(user=request.user, ordered=False)
+  if cart_query.exists():
+    cart = cart_query[0]
+    if cart.items.filter(item__item_id = product_id).exists():
+      order_items.quantity += 1
+      order_item.save()
+    else:
+      cart.items.add(order_prod)
+      cart.save()
+      return redirect("core:order-summary")
+  else:
+    ordered_date = timezone.now()
+    cart = Cart.objects.create(user=request.user, ordered_date=ordered_date)
+    cart.items.add(order_prod)
+    return redirect('order-summary')
+
+  
+def OrderSummaryView(request):
+  cart = Cart.objects.get(user=request.user, ordered=False)
+  return render(request, 'main_app/order_summary.html', {'cart': cart})
+

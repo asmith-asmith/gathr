@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Order List</h1>
+
+<div class="row">
+    {% for order in orderproduct_list %}
+    <a href="{% url 'orderproduct_detail' order.id %}">
+        <div class="col s6 col-offset-3">
+            <div class="card">
+            <div class="card-content">
+                <span class="card-title">{{ order.item.name }}</span>
+                <p>Size: {{ order.size }}</p>
+                <p>Quantity: {{ order.order_quantity }}</p>
+            </div>
+            </div>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Cart</h1>
+
+<div class="row">
+    <div class="col s6">
+      <table class="striped">
+        <thead>
+          <tr><th>Item</th><th>Size</th><th>Quantity</th><th>Price</th></tr>
+        </thead>
+        <tbody>
+          {% for orderproduct in cart.item_set.all %}
+              <tr>
+                <td><a href="{% url 'product_detail' orderproduct.item %}">Image</a></td>
+                <td>{{ orderproduct.size }}</a></td>
+                <td>{{ orderproduct.order_quantity }}</a></td>
+              </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  </div>
+  {% endblock %}

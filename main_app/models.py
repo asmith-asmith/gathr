@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.conf import settings
 # Create your models here.
 
 SIZES = (
@@ -51,6 +52,7 @@ class OrderProduct(models.Model):
         choices=SIZES,
         default=SIZES[0][0]
     )
+    # price = calxulation of products*quantity
     # cart = models.ForeignKey(Cart, on_delete=models.SET_NULL)
     # user = models.ForeignKey(User, on_delete=models.CASCADE)
 
@@ -58,21 +60,16 @@ class OrderProduct(models.Model):
         return self.item
 
 class Cart(models.Model):
-	items = models.ManyToManyField(OrderProduct)
-	start_date = models.DateTimeField(auto_now_add=True)
-	ordered_date= models.DateTimeField()
-	ordered = models.BooleanField(default=False) #when this true we create new cart
-    # user = models.ForeignKey(User, on_delete=models.CASCADE)
-    #image
+    items = models.ManyToManyField(OrderProduct)
+    ordered_date = models.DateTimeField(auto_now_add=True, blank=True)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    ordered = models.BooleanField(default=False)
 
-	# def __str__(self):
-	# 	return self.user.username
-
-
-
+    def __str__(self):
+        return str(self.user.username, self.items.size)
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     causes = models.ManyToManyField(Cause)
     #null=True, blank=True
 
