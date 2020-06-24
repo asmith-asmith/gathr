@@ -31,6 +31,9 @@
     <form action="{% url 'order_update' order.id %}">
         <button>Checkout</button>
     </form>
+    <form action="{% url 'order_empty' order.id %}">
+      <button>Empty Cart</button>
+    </form>
   </div>
 </div>
 <div class="row">

@@ -9,7 +9,6 @@
             {% csrf_token %}
             <input type="submit" value="Confirm" class="btn">
         </form>
-        <a href="{% url 'order_delete' order.id %}">Cancel Order</a>
     </div>
 </div>
 {% endblock %}

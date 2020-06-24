@@ -5,8 +5,9 @@ from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required #@login_required  -- add this to functions
 from django.contrib.auth.mixins import LoginRequiredMixin #LoginRequiredMixin, -- add this in CBV parameter
-from .models import Product, Cause, Profile, User, Order, ProductPhoto, CausePhoto, UserPhoto
 from django.utils import timezone
+from django.db.models.signals import post_save
+from .models import Product, Cause, Profile, User, Order, ProductPhoto, CausePhoto, UserPhoto
 from .forms import OrderForm
 import uuid
 import boto3
@@ -35,8 +36,6 @@ def signup(request):
     form = UserCreationForm(request.POST)
     if form.is_valid():
       user = form.save()
-      # p = Profile(user=user.user_id, causes=null)
-      # p.save()
       login(request, user)
       return redirect('home')
     else:
@@ -113,21 +112,29 @@ def add_cart(request, product_id):
   return render(request, 'main_app/order_detail.html', {'order': order})
 
 def cart_detail(request):
-  order = Order.objects.get(user=request.user, ordered=False)
-  return render(request, 'main_app/order_detail.html', {'order': order})
- 
+  not_ordered = request.user.order_set.filter(ordered=False).exists()
+  if not_ordered:
+    order = Order.objects.get(user=request.user, ordered=False)
+    return render(request, 'main_app/order_detail.html', {'order': order})
+  else:
+    return render(request, 'empty.html') 
 
 def order_form(request, order_id):
-  form = OrderForm()
-  return render(request, 'main_app/order_form.html', {'form': form})
-
-def confirm_order(request, order_id):
   order = Order.objects.get(id=order_id)
+  return render(request, 'main_app/order_form.html', {'order': order})
+
+def order_confirm(request, order_id):
+  order_query = Order.objects.filter(user=request.user, ordered=False)
+  order = order_query[0]
   order.ordered = True
   order.save()
   return render(request, 'success.html')
 
-
+def order_empty(request, order_id):
+  order = Order.objects.get(id=order_id)
+  for prod in order.product.all():
+    order.product.remove(prod.id)
+  return redirect('product_index')
 
 def add_product_photo(request, product_id):
     photo_file = request.FILES.get('photo-file', None)
@@ -141,19 +148,19 @@ def add_product_photo(request, product_id):
             photo.save()
         except:
             print('An error occurred uploading file to S3')
-    return redirect('product_detail', product_id=product_id)
+    return redirect('product_detail', pk=product_id)
 
 
-# def add_product_photo(request, product_id):
-#     photo_file = request.FILES.get('photo-file', None)
-#     if photo_file:
-#         s3 = boto3.client('s3')
-#         key = uuid.uuid4().hex[:6] + photo_file.name[photo_file.name.rfind('.'):]
-#         try:
-#             s3.upload_fileobj(photo_file, BUCKET, key)
-#             url = f"{S3_BASE_URL}{BUCKET}/{key}"
-#             photo = Photo(url=url, cat_id=cat_id)
-#             photo.save()
-#         except:
-#             print('An error occurred uploading file to S3')
-#     return redirect('product_detail', product_id=product_id)
+def add_cause_photo(request, cause_id):
+    photo_file = request.FILES.get('photo-file', None)
+    if photo_file:
+        s3 = boto3.client('s3')
+        key = uuid.uuid4().hex[:6] + photo_file.name[photo_file.name.rfind('.'):]
+        try:
+            s3.upload_fileobj(photo_file, BUCKET, key)
+            url = f"{S3_BASE_URL}{BUCKET}/{key}"
+            photo = CausePhoto(url=url, cause_id=cause_id)
+            photo.save()
+        except:
+            print('An error occurred uploading file to S3')
+    return redirect('cause_detail', pk=cause_id)

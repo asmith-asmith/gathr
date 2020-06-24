@@ -10,8 +10,10 @@
             <div class="card">
             <div class="card-content">
                 <span class="card-title">{{ product.name }}</span>
-                <p>IMAGE</p>
-                <p>Price: {{ product.price }}</p>
+                {% for photo in product.productphoto_set.all %}
+                <img class="responsive-img" src="{{photo.url}}">
+                {% endfor %}
+                <p>${{ product.price }}</p>
             </div>
             </div>
         </div>
