@@ -22,6 +22,13 @@ def home(request):
 def about(request):
     return render(request, 'about.html')
 
+def emptycart(request):
+  return render(request, 'empty.html')
+
+def success(request):
+  return render(request, 'success.html')
+
+
 def signup(request):
   error_message = ''
   if request.method == 'POST':
@@ -113,6 +120,13 @@ def cart_detail(request):
 def order_form(request, order_id):
   form = OrderForm()
   return render(request, 'main_app/order_form.html', {'form': form})
+
+def confirm_order(request, order_id):
+  order = Order.objects.get(id=order_id)
+  order.ordered = True
+  order.save()
+  return render(request, 'success.html')
+
 
 
 def add_product_photo(request, product_id):
