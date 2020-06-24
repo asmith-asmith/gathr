@@ -5,9 +5,14 @@ from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required #@login_required  -- add this to functions
 from django.contrib.auth.mixins import LoginRequiredMixin #LoginRequiredMixin, -- add this in CBV parameter
-from .models import Product, Cause, Profile, User, Order
+from .models import Product, Cause, Profile, User, Order, ProductPhoto, CausePhoto, UserPhoto
 from django.utils import timezone
-# from .forms import 
+from .forms import OrderForm
+import uuid
+import boto3
+
+S3_BASE_URL = 'https://s3-us-west-1.amazonaws.com/'
+BUCKET = 'learning-catcollector-aws-s3'
 
 
 # Create your views here.
@@ -101,5 +106,40 @@ def add_cart(request, product_id):
   return render(request, 'main_app/order_detail.html', {'order': order})
 
 def cart_detail(request):
-  order = Order.objects.get(user=request.user)
+  order = Order.objects.get(user=request.user, ordered=False)
   return render(request, 'main_app/order_detail.html', {'order': order})
+ 
+
+def order_form(request, order_id):
+  form = OrderForm()
+  return render(request, 'main_app/order_form.html', {'form': form})
+
+
+def add_product_photo(request, product_id):
+    photo_file = request.FILES.get('photo-file', None)
+    if photo_file:
+        s3 = boto3.client('s3')
+        key = uuid.uuid4().hex[:6] + photo_file.name[photo_file.name.rfind('.'):]
+        try:
+            s3.upload_fileobj(photo_file, BUCKET, key)
+            url = f"{S3_BASE_URL}{BUCKET}/{key}"
+            photo = ProductPhoto(url=url, product_id=product_id)
+            photo.save()
+        except:
+            print('An error occurred uploading file to S3')
+    return redirect('product_detail', product_id=product_id)
+
+
+# def add_product_photo(request, product_id):
+#     photo_file = request.FILES.get('photo-file', None)
+#     if photo_file:
+#         s3 = boto3.client('s3')
+#         key = uuid.uuid4().hex[:6] + photo_file.name[photo_file.name.rfind('.'):]
+#         try:
+#             s3.upload_fileobj(photo_file, BUCKET, key)
+#             url = f"{S3_BASE_URL}{BUCKET}/{key}"
+#             photo = Photo(url=url, cat_id=cat_id)
+#             photo.save()
+#         except:
+#             print('An error occurred uploading file to S3')
+#     return redirect('product_detail', product_id=product_id)

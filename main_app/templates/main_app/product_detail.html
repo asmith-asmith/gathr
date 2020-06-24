@@ -8,7 +8,17 @@
     <div class="card">
       <div class="card-content">
         <span class="card-title">{{ product.name }}</span>
-        <p>IMAGE</p>
+        {% for photo in product.productphoto_set.all %}
+          <img class="responsive-img card-panel" src="{{photo.url}}">
+        {% empty %}
+          <div class="card-panel teal-text center-align">No Photos Uploaded</div>
+        {% endfor %}
+        <form action="{% url 'add_product_photo' product.id %}" enctype="multipart/form-data" method="POST" class="card-panel">
+          {% csrf_token %}
+          <input type="file" name="photo-file">
+          <br><br>
+          <input type="submit" class="btn" value="Upload Photo">
+        </form>
       </div>
       <div class="card-action">
         <a href="{% url 'product_update' product.id %}">Edit</a>
