@@ -21,5 +21,10 @@ urlpatterns = [
     path('profile/<int:user_id>/', views.user_detail, name='user_detail'),
 
     path('cart/<int:product_id>/', views.add_cart, name='add_cart'),
-    path('cart/', views.cart_detail, name='cart_detail')
+    path('cart/', views.cart_detail, name='cart_detail'),
+    path('cart/<int:order_id>/update', views.order_form, name='order_update'),
+
+    path('products/<int:product_id>/add_photo/', views.add_product_photo, name='add_product_photo'),
+    # path('causes/<int:cause_id>/add_photo/', views.add_cause_photo, name='add_cause_photo'),
+    # path('users/<int:user_id>/add_photo/', views.add_user_photo, name='add_user_photo'),
 ]

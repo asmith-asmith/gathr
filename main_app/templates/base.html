@@ -20,7 +20,7 @@
                 <ul class="brand-logo center">
                     <li><a href="{% url 'product_index' %}">Products</a></li>
                     <li><a href="{% url 'cause_index' %}">Causes</a></li>
-
+                    <li><a href="{% url 'cart_detail' %}">My Cart</a></li>
                 </ul>
                 <ul class="right">
                     {% if user.is_authenticated %}
