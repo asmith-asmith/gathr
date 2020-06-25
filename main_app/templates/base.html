@@ -15,16 +15,20 @@
         <nav>
             <div class="nav-wrapper">
                 <ul>
-                    <li><a href="/" class="left brand-logo">&nbsp;&nbsp;GATHR</a></li>
+                    <li><strong><a href="/" class="left brand-logo">&nbsp;&nbsp;GATHR</a></strong></strong></li>
                 </ul>
                 <ul class="brand-logo center">
                     <li><a href="{% url 'product_index' %}">Products</a></li>
                     <li><a href="{% url 'cause_index' %}">Causes</a></li>
-                    <li><a href="{% url 'cart_detail' %}">My Cart</a></li>
                 </ul>
                 <ul class="right">
                     {% if user.is_authenticated %}
                         <li><a href="{% url 'logout' %}">Log Out</a></li>
+                        {% if user.order_set.all %}
+                        <li><a href="{% url 'cart_detail' %}">My Cart</a></li>
+                        {% else %}
+                        <li><a href="{% url 'empty' %}">My Cart</a></li>
+                        {% endif %}
                     {% else %}
                         <li><a href="{% url 'signup' %}">Sign Up</a></li>
                         <li><a href="{% url 'login' %}">Log In</a></li>

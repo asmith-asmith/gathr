@@ -1,47 +1,40 @@
 {% extends 'base.html' %}
 {% block content %}
 
+
 <h1>Product Details</h1>
+
 
 <div class="row">
   <div class="col s6 offset-s1">
     <div class="card">
-      <div class="card-content">
-        <span class="card-title">{{ product.name }}</span>
-        {% for photo in product.productphoto_set.all %}
-          <img class="responsive-img card-panel" src="{{photo.url}}">
-        {% empty %}
-          <div class="card-panel teal-text center-align">No Photos Uploaded</div>
-        {% endfor %}
-        <form action="{% url 'add_product_photo' product.id %}" enctype="multipart/form-data" method="POST" class="card-panel">
-          {% csrf_token %}
-          <input type="file" name="photo-file">
-          <br><br>
-          <input type="submit" class="btn" value="Upload Photo">
-        </form>
-      </div>
-      <div class="card-action">
-        <a href="{% url 'product_update' product.id %}">Edit</a>
-        <a href="{% url 'product_delete' product.id %}">Delete</a>
-      </div>
+          {% for photo in product.productphoto_set.all %}
+            <img class="responsive-img" src="{{photo.url}}">
+          {% endfor %}
+          {% if user.is_superuser %}
+            <form action="{% url 'add_product_photo' product.id %}" enctype="multipart/form-data" method="POST" class="card-panel">
+              {% csrf_token %}
+              <input type="file" name="photo-file">
+              <br><br>
+              <input type="submit" class="btn" value="Upload Photo">
+            </form>
+          {% endif %}
     </div>
   </div>
-  <div class="col s5">
+  <div class="col s3">
+    <h4>{{ product.name }}</h4>
     <p>Price: {{ product.price }}</p>
     <p>Description: {{ product.description }}</p>
-    <p>Category: {{ product.category }}</p>
-    <p>Quantity: {{ product.quantity }}</p>
-    <p>Size: {{ product.size }}</p>
+      <a class="waves-effect waves-light pink darken-1 btn-small">{{ product.size }}</a>
+      {% for prod in other_prod %}
+      <a class="waves-effect waves-light pink darken-3 btn-small" href="{% url 'product_detail' prod.id %}">{{ prod.size }}</a>
+      {% endfor %}
+      <br><br>
+      <form action="{% url 'add_cart' product.id %}" method="POST">
+          {% csrf_token %}
+          <input type="submit" class="btn black" value="Add to Cart">
+      </form>
   </div>
-  
-</div>
-<div class="row">
-  <div class="col s6 offset-s6">
-    <!-- % url 'add_order' cart.id % -->
-    <form action="{% url 'add_cart' product.id %}" method="POST">
-        {% csrf_token %}
-        <input type="submit" class="btn" value="Add to Cart">
-    </form>
-  </div>
+
 </div>
 {% endblock %}
