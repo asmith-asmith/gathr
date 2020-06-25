@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 from django.contrib.auth import login
+from django.db.models import Q
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required #@login_required  -- add this to functions
 from django.contrib.auth.mixins import LoginRequiredMixin #LoginRequiredMixin, -- add this in CBV parameter
@@ -45,13 +46,14 @@ def signup(request):
   return render(request, 'registration/signup.html', context)
 
 class ProductList(ListView):
-  model = Product
+  queryset = Product.objects.filter(Q(size='Small') | Q(size='7') )
 
 
 def product_detail(request, product_id):
   product = Product.objects.get(id=product_id)
+  other_prod = Product.objects.filter(Q(name=product.name) & ~Q(size=product.size))
   # order_form = OrderForm()
-  return render(request, 'main_app/product_detail.html', {'product': product})
+  return render(request, 'main_app/product_detail.html', {'product': product, 'other_prod': other_prod})
 
 # class ProductDetail(DetailView):
 #   model = Product
