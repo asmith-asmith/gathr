@@ -148,7 +148,7 @@ def add_product_photo(request, product_id):
             photo.save()
         except:
             print('An error occurred uploading file to S3')
-    return redirect('product_detail', pk=product_id)
+    return redirect('product_detail', product_id=product_id)
 
 
 def add_cause_photo(request, cause_id):
