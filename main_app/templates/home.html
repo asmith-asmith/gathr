@@ -1,27 +1,21 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="row">
-    <div class="col s9">
-        <div class="card">
-            <h5><b>WHERE CAUSES, COMPASSION, COMMERCE, AND COMMUNITY INTERSECT</b></h5>
+<div id="homemessage" class="container">
+    <div class="row center-align">
+        <div class="col center-align">
+            
+            <h5><b>WHERE <span class="emphasis">CAUSES</span>, <span class="emphasis">COMPASSION</span>, <span class="emphasis">COMMERCE</span>, AND <span class="emphasis">COMMUNITY</span> INTERSECT.</b></h5>
+            
         </div>
     </div>
-</div>
 
-<div class="row">
-    <div class="col s9 col-offset-3">
-        <div class="card">
+    <div class="row center-align">
+        <div class="col center-align col-offset-3">
             <p>Welcome! We are GATHR, a non-traditional fundraising enviornment fostering support for cause-based organizations through unique and locally designed swag. Here we create community and unity around shared causes. </p>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col s6 col-offset-3">
-        <div class="card">
+            <br><br>
             {% if not user.is_authenticated %}
-                <p><a href="{% url 'login' %}">LOG IN</a> OR <a href="{% url 'signup' %}">SIGN UP</a> TO SHOP AND BROWSE CAUSES</p>
+                <p class="center-align"><span id="loginhome"><a href="{% url 'login' %}">LOG IN</a> OR <a href="{% url 'signup' %}">SIGN UP</a> TO SHOP AND BROWSE CAUSES</span></p>
             {% endif %}
         </div>
     </div>
