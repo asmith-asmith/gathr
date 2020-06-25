@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.conf import settings
 # Create your models here.
 
 SIZES = (
@@ -28,56 +29,59 @@ class Cause(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=100)
-    price = models.FloatField() #Changed this to float feild
+    price = models.FloatField()
     description = models.TextField(max_length=250)
     size = models.CharField(max_length=100)
-    quantity = models.IntegerField()
-    category = models.CharField( #made this a choice field choice fields accesed by item.get_category_display
+    category = models.CharField(
         max_length=2,
         choices=CATEGORY_CHOICES,
         default=CATEGORY_CHOICES[0][0]
     )
     cause = models.ForeignKey(Cause, on_delete=models.CASCADE)
 
-    def __str__(self): #added this string method
+    def __str__(self):
         return self.name
 
 
-class OrderProduct(models.Model):
-    item = models.ForeignKey(Product, on_delete=models.CASCADE)
-    order_quantity = models.IntegerField(default=1) # this will hold quantity of
-    size = models.CharField(  
-        max_length=2,
-        choices=SIZES,
-        default=SIZES[0][0]
-    )
-    # cart = models.ForeignKey(Cart, on_delete=models.SET_NULL)
-    # user = models.ForeignKey(User, on_delete=models.CASCADE)
+class Order(models.Model):
+    product = models.ManyToManyField(Product)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    ordered_date = models.DateTimeField()
+    ordered = models.BooleanField(default=False)
 
-    def __str__(self): #added this string method
-        return self.item
+class CausePhoto(models.Model):
+    url = models.CharField(max_length=200)
+    cause = models.ForeignKey(Cause, on_delete=models.CASCADE)
 
-class Cart(models.Model):
-	items = models.ManyToManyField(OrderProduct)
-	start_date = models.DateTimeField(auto_now_add=True)
-	ordered_date= models.DateTimeField()
-	ordered = models.BooleanField(default=False) #when this true we create new cart
-    # user = models.ForeignKey(User, on_delete=models.CASCADE)
-    #image
+    def __str__(self):
+        return f"Photo for cause_id: {self.cause_id} @{self.url}"
 
-	# def __str__(self):
-	# 	return self.user.username
+class ProductPhoto(models.Model):
+    url = models.CharField(max_length=200)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Photo for product_id: {self.product_id} @{self.url}"
+
+class UserPhoto(models.Model):
+    url = models.CharField(max_length=200)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Photo for user_id: {self.user_id} @{self.url}"
+
+    
 
 
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     causes = models.ManyToManyField(Cause)
-    #null=True, blank=True
+    purchased_items = models.ManyToManyField(Order)
 
     def __str__(self):
-        return self.user.username
+        return self.user
 
 
 # User model
