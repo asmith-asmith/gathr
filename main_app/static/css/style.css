@@ -3,25 +3,59 @@ body {
     min-height: 100vh;
     flex-direction: column;
 }
-  
 main {
     flex: 1 0 auto;
 }
-
 a{
     color: black;
 }
-
 nav{
     background-color: rgba(0,0,0,0.87);
 }
-/* 
-.navbar{
+/* .navbar-fixed{
     padding: 2%;
 } */
-
 footer.page-footer {
     padding-top: 0;
     text-align: right;
     background-color: rgba(0,0,0,0.87);
 }
+#sizebutton{
+    background-color: grey;
+}
+#homemessage{
+    padding: 5%;
+}
+.emphasis{
+    background-color: #e91e63;
+    color: white;
+    padding: 0 1%;
+}
+h5 {
+    line-height: 1.5;
+}
+#loginhome {
+    background-color: lightgrey;
+    padding: 2%;
+}
+.card-img{
+    height: 50vh;
+    overflow: hidden;
+}
+#listphoto{
+    height: 80px;
+}
+.tabletitle{
+    font-weight: bold;
+    font-size: 20px;
+}
+.navbar-fixed ul li.active {
+    color: red;
+}
+
+/* .buffer{
+    background-color: rgba(0,0,0,0.87);
+    color: white;
+    padding: 2%;
+    margin: 0;
+} */

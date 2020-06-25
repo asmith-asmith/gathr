@@ -4,32 +4,39 @@
 <h1>Cause Details</h1>
 
 <div class="row">
-  <div class="col s6 col-offset-3">
+  <div class="col s6">
     <div class="card">
-      <div class="card-content">
-        <span class="card-title">{{ cause.name }}</span>
-        <p>Description: {{ cause.description }}</p>
-        <p>Type: {{ cause.type }}</p>
-        <p>Proceeds Raised to Date: {{ cause.proceeds }}</p>
-        <p>Learn More about the Cause: {{ cause.url }}</p>
-      </div>
-      <div class="card-action">
-        <a href="{% url 'cause_update' cause.id %}">Edit</a>
-        <a href="{% url 'cause_delete' cause.id %}">Delete</a>
-      </div>
+        {% for photo in cause.causephoto_set.all %}
+          <img class="responsive-img" src="{{photo.url}}">
+        {% endfor %}
+        {% if user.is_superuser %}
+            <form action="{% url 'add_cause_photo' cause.id %}" enctype="multipart/form-data" method="POST" class="card-panel">
+              {% csrf_token %}
+              <input type="file" name="photo-file">
+              <br><br>
+              <input type="submit" class="btn" value="Upload Photo">
+            </form>
+          {% endif %}
     </div>
   </div>
-</div>
-
-<div class="row">
   <div class="col s6">
-    <table class="striped">
-      <thead>
-        <tr><th>Product</th><th></th></tr>
-      </thead>
+    <h4>{{ cause.name }}</h4>
+    <p>Description: {{ cause.description }}</p>
+    <p>Type: {{ cause.type }}</p>
+    <p>Proceeds Raised to Date: {{ cause.proceeds }}</p>
+    <p>Learn More about the Cause: {{ cause.url }}</p>
+    <hr>
+    <p class="tabletitle"><strong>Products that support this cause</strong></p>
+    <table>
       <tbody>
         {% for product in cause.product_set.all %}
             <tr>
+              <td><a href="{% url 'product_detail' product.id %}">
+                {% for photo in product.productphoto_set.all %}
+                  <img id="listphoto" class="responsive-img" src="{{photo.url}}">
+                {% endfor %}
+              </a>
+              </td>
               <td><a href="{% url 'product_detail' product.id %}">{{product.name}}</a></td>
             </tr>
         {% endfor %}
@@ -37,5 +44,5 @@
     </table>
   </div>
 </div>
-</div>
+
 {% endblock %}

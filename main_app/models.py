@@ -70,18 +70,14 @@ class UserPhoto(models.Model):
     def __str__(self):
         return f"Photo for user_id: {self.user_id} @{self.url}"
 
-    
-
-
-
 
 class Profile(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     causes = models.ManyToManyField(Cause)
     purchased_items = models.ManyToManyField(Order)
 
     def __str__(self):
-        return self.user
+        return self.user.username
 
 
 # User model

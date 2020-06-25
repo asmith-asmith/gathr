@@ -1,19 +1,24 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1>Product List</h1>
+<div class="row center-align">
+    <div class="col center-align">
+        <h1>Browse All Products</h1>
+    </div>
+</div>
 
 <div class="row">
     {% for product in product_list %}
     <a href="{% url 'product_detail' product.id %}">
-        <div class="col s6 col-offset-3">
-            <div class="card">
-            <div class="card-content">
-                <span class="card-title">{{ product.name }}</span>
-                <p>IMAGE</p>
-                <p>Price: {{ product.price }}</p>
+        <div class="col s9 m6 l4">
+            <h5>{{ product.name }}</h5>
+            <p>${{ product.price }}</p>
+            <div class="card-img">
+                {% for photo in product.productphoto_set.all %}
+                <img class="responsive-img" src="{{photo.url}}">
+                {% endfor %}
             </div>
-            </div>
+            <hr>
         </div>
     </a>
     {% endfor %}

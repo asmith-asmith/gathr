@@ -6,40 +6,42 @@
     <div class="card">
       <div class="card-content">
         <span class="card-title"></span>
-        <p>{{ user.username }}'s Shopping Cart</p>
+        <h5>{{ user.username }}'s Shopping
+           Cart</h5>
       </div>
     </div>
   </div>
 </div>
 <div class="row">
-  <div class="col s6 offset-s3 center-align">
-        {% if order %}
-            <table>
-            <thead>
-                <tr><th></th><th>Name</th><th>Size</th><th>Price</th></tr>
-            </thead>
-            <tbody>
-            {% for product in order.product.all %}
-                <tr>
-                    <td>IMAGE</td>
-                    <td><a href="{% url 'product_detail' product.id %}">{{product.name}}</a></td>
-                    <td>{{product.size}}</td>
-                    <td>{{product.price}}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-            </table>
-            <form action="{% url 'order_update' order.id %}">
-                <button>Checkout</button>
-            </form>
-        {% else %}
-            <h1>Time To Get Shopping</h1>
-        {% endif %}
-  </div>
-</div>
-<div class="row">
+  {% if order.product.all.exists %}
     <div class="col s6 offset-s3 center-align">
+      <table>
+      <thead>
+        <tr>IMAGE<th></th><th>Name</th><th>Size</th><th>Price</th></tr>
+      </thead>
+      <tbody>
+      {% for product in order.product.all %}
+        <tr>
+          <td>{% for photo in product.productphoto_set.all %}
+            <img id="listphoto" class="responsive-img" src="{{photo.url}}">
+          {% endfor %}</td>
+          <td><a href="{% url 'product_detail' product.id %}">{{product.name}}</a></td>
+          <td>{{product.size}}</td>
+          <td>{{product.price}}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+      </table>
+      <form action="{% url 'order_update' order.id %}">
+          <button>Checkout</button>
+      </form>
+      <form action="{% url 'order_empty' order.id %}">
+        <button>Empty Cart</button>
+      </form>
     </div>
+  {% else %}
+    <h1>Do Some Shopping</h1>
+  {% endif %}
 </div>
 
 {% endblock %}
