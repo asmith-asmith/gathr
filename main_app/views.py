@@ -24,6 +24,7 @@ def home(request):
 def about(request):
     return render(request, 'about.html')
 
+@login_required
 def emptycart(request):
   return render(request, 'empty.html')
 
@@ -58,15 +59,15 @@ def product_detail(request, product_id):
 # class ProductDetail(DetailView):
 #   model = Product
 
-class ProductCreate(CreateView):
+class ProductCreate(LoginRequiredMixin, CreateView):
   model = Product
   fields = '__all__'
 
-class ProductUpdate(UpdateView):
+class ProductUpdate(LoginRequiredMixin, UpdateView):
   model = Product
   fields = '__all__'
 
-class ProductDelete(DeleteView):
+class ProductDelete(LoginRequiredMixin, DeleteView):
   model = Product
   success_url = '/products/'
 
@@ -78,25 +79,25 @@ def cause_index(request):
 class CauseDetail(DetailView):
   model = Cause
 
-class CauseCreate(CreateView):
+class CauseCreate(LoginRequiredMixin, CreateView):
   model = Cause
   fields = '__all__'
 
-class CauseUpdate(UpdateView):
+class CauseUpdate(LoginRequiredMixin, UpdateView):
   model = Cause
   fields = '__all__'
 
-class CauseDelete(DeleteView):
+class CauseDelete(LoginRequiredMixin, DeleteView):
   model = Cause
   success_url = '/causes/'
 
-
+@login_required
 def user_detail(request, user_id):
   user = User.objects.get(id=user_id)
   # user = User.objects.get(id=profile.user)
   return render(request, 'main_app/user_detail.html', {'user': user})
 
-
+@login_required
 def add_cart(request, product_id):
   print(product_id)
   order_query = Order.objects.filter(user=request.user, ordered=False)
@@ -113,6 +114,7 @@ def add_cart(request, product_id):
     order.product.add(product1)
   return render(request, 'main_app/order_detail.html', {'order': order})
 
+@login_required
 def cart_detail(request):
   not_ordered = request.user.order_set.filter(ordered=False).exists()
   if not_ordered:
@@ -121,10 +123,12 @@ def cart_detail(request):
   else:
     return render(request, 'empty.html') 
 
+@login_required
 def order_form(request, order_id):
   order = Order.objects.get(id=order_id)
   return render(request, 'main_app/order_form.html', {'order': order})
 
+@login_required
 def order_confirm(request, order_id):
   order_query = Order.objects.filter(user=request.user, ordered=False)
   order = order_query[0]
@@ -132,12 +136,14 @@ def order_confirm(request, order_id):
   order.save()
   return render(request, 'success.html')
 
+@login_required
 def order_empty(request, order_id):
   order = Order.objects.get(id=order_id)
   for prod in order.product.all():
     order.product.remove(prod.id)
   return redirect('product_index')
 
+@login_required
 def add_product_photo(request, product_id):
     photo_file = request.FILES.get('photo-file', None)
     if photo_file:
@@ -152,7 +158,7 @@ def add_product_photo(request, product_id):
             print('An error occurred uploading file to S3')
     return redirect('product_detail', product_id=product_id)
 
-
+@login_required
 def add_cause_photo(request, cause_id):
     photo_file = request.FILES.get('photo-file', None)
     if photo_file:
