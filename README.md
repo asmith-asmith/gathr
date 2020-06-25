@@ -25,12 +25,12 @@
 - PostgreSQL
 - AWS S3
 - Heroku
-- Github
 
 ## Communication and Project Management Technologies:
 - Lucid Chart
 - Trello
 - Zoom
+- Github
 
 
 
