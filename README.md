@@ -7,7 +7,7 @@
 
 ## Views During Play
 
-![GATHR](https://i.imgur.com/jS7YDoJ.png?1
+![GATHR](https://i.imgur.com/jS7YDoJ.png?1)
 
 A clear message above the board indicates whose turn it is.
 ![Turn message](https://i.imgur.com/fXg7jSd.png)
