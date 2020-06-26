@@ -49,15 +49,10 @@ def signup(request):
 class ProductList(ListView):
   queryset = Product.objects.filter(Q(size='Small') | Q(size='7') )
 
-
 def product_detail(request, product_id):
   product = Product.objects.get(id=product_id)
   other_prod = Product.objects.filter(Q(name=product.name) & ~Q(size=product.size))
-  # order_form = OrderForm()
   return render(request, 'main_app/product_detail.html', {'product': product, 'other_prod': other_prod})
-
-# class ProductDetail(DetailView):
-#   model = Product
 
 class ProductCreate(LoginRequiredMixin, CreateView):
   model = Product
@@ -70,7 +65,6 @@ class ProductUpdate(LoginRequiredMixin, UpdateView):
 class ProductDelete(LoginRequiredMixin, DeleteView):
   model = Product
   success_url = '/products/'
-
 
 def cause_index(request):
   causes = Cause.objects.all()
@@ -94,12 +88,10 @@ class CauseDelete(LoginRequiredMixin, DeleteView):
 @login_required
 def user_detail(request, user_id):
   user = User.objects.get(id=user_id)
-  # user = User.objects.get(id=profile.user)
   return render(request, 'main_app/user_detail.html', {'user': user})
 
 @login_required
 def add_cart(request, product_id):
-  print(product_id)
   order_query = Order.objects.filter(user=request.user, ordered=False)
   product1 = Product.objects.get(id=product_id)
   if order_query.exists():
